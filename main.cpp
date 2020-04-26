@@ -30,7 +30,7 @@ void drag(GLFWwindow*  window, double mx, double my)
   Y = yi;
 
   if (X > (pSim->DIM() - 1))
-    X = pSim->DIM() - 1;xzc
+    X = pSim->DIM() - 1;
   if (Y > (pSim->DIM() - 1))
     Y = pSim->DIM() - 1;
 
