@@ -27,8 +27,16 @@ struct Visualizer
 		CountScalarObjects = 3,
 	};
 
+	enum GlyphType {
+		POINTS = 0,
+		TRIANGLES = 1,
+		TRIANGLES_ADJACENCY = 2,
+		LINES = 3,
+		CountGlyphType = 4,
+	};
+
     static constexpr uint32_t n_dir_colormaps = 2;
-    static constexpr uint32_t n_scalar_colormaps = 3;
+    static constexpr uint32_t n_scalar_colormaps = 6;
 
     void ToggleDrawGlyphs() { draw_vecs = !draw_vecs;}
     void ToggleDrawSmoke() { draw_smoke = !draw_smoke;}
@@ -38,6 +46,9 @@ struct Visualizer
 	}
 	void NextScalarObject() {
 		object_scalar = (object_scalar + 1) % ((int)ScalarObjects::CountScalarObjects);
+	}
+	void NextGlyphType() {
+		glyph_type = (glyph_type + 1) % ((int)GlyphType::CountGlyphType);
 	}
     void NextScalarColormap()    { colormap_scalar = (colormap_scalar + 1) % n_scalar_colormaps;}
     void MultiplyGlyphLength(double mul) { vec_scale *= mul; }
@@ -65,6 +76,7 @@ private:
     uint32_t colormap_dir    = WHITE;
     uint32_t colormap_scalar = WHITE;
     uint32_t object_scalar = VELOCITY;
+    uint32_t glyph_type = POINTS;
 
     int m_grid_dim;
     uint32_t m_width;

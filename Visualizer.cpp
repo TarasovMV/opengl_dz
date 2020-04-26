@@ -217,13 +217,27 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
         py = hn + (double)j * hn;
 
         float r, g, b;
-        Colormap(pSim->GetDensity(i, j), r, g, b);
+
+		/// Карта по вектору скорости
+		if (object_scalar == VELOCITY) {
+			ScalarToColor(pSim->GetVelocity(i, j) * ColorMapKfVelocity, colormap_dir, r, g, b);
+		}
+		/// Карта по вектору силы
+		else if (object_scalar == FORCE) {
+			ScalarToColor(pSim->GetForce(i, j) * ColorMapKfForce, colormap_dir, r, g, b);
+		}
+		/// Карта по вектору плотности
+		else if (object_scalar == DENSITY) {
+			ScalarToColor(pSim->GetDensity(i, j), colormap_dir, r, g, b);
+		}
+
         smoke_col[c] = r; c++;
         smoke_col[c] = g; c++;
         smoke_col[c] = b; c++;
 
         smoke_pos[k] = coeff_x * px - 1.0f; k++;
         smoke_pos[k] = coeff_y * py - 1.0f; k++;
+
       }
     }
 
@@ -325,7 +339,19 @@ void Visualizer::Draw()
   {
     glBindVertexArray(sim_vao_vec); GL_CHECK_ERRORS;
 	/// Способы отрисовски глифов
-    glDrawArrays(GL_POINTS, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
+	if (glyph_type == POINTS) {
+		glDrawArrays(GL_POINTS, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
+	}
+	else if (glyph_type == TRIANGLES) {
+		glDrawArrays(GL_TRIANGLES, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
+	}
+	else if (glyph_type == TRIANGLES_ADJACENCY) {
+		glDrawArrays(GL_TRIANGLES_ADJACENCY, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
+	}
+	else if (glyph_type == LINES) {
+		glDrawArrays(GL_LINES, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
+	}
+    //glDrawArrays(GL_POINTS, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
     //glDrawArrays(GL_TRIANGLES, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
     //glDrawArrays(GL_TRIANGLES_ADJACENCY, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
     //glDrawArrays(GL_LINES, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;

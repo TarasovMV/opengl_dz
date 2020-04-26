@@ -74,10 +74,13 @@ static void key(GLFWwindow* window, int k, int s, int action, int mods)
     case GLFW_KEY_A: pVis->MultiplyGlyphLength(0.8f); break;
     case GLFW_KEY_X: pVis->ToggleDrawSmoke(); break;
     case GLFW_KEY_Z: pVis->ToggleDrawGlyphs(); break;
-    case GLFW_KEY_M: pVis->NextScalarColormap(); break;
 
+	/// Переключение цветовой карты
+    case GLFW_KEY_M: pVis->NextScalarColormap(); break;
 	/// Переключение скалярной величины
     case GLFW_KEY_P: pVis->NextScalarObject(); break;
+	/// Переключение скалярной величины
+	case GLFW_KEY_U: pVis->NextGlyphType(); break;
     
     case GLFW_KEY_ESCAPE: exit(0);
     case GLFW_KEY_SPACE:
