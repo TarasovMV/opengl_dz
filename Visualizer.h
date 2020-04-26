@@ -59,6 +59,7 @@ struct Visualizer
     //update buffers with values from Simulator
     void UpdateBuffers(const std::shared_ptr<Simulator> &pSim);
     void Draw();
+	void DrawIsoline(const std::shared_ptr<Simulator>& pSim);
 
 private:
     //Colormap selection func
@@ -72,6 +73,7 @@ private:
     float vec_scale = 2000;
     bool  draw_smoke = false;
     bool  draw_vecs = true;
+	bool  draw_isoline = true;
 
     uint32_t colormap_dir    = WHITE;
     uint32_t colormap_scalar = WHITE;
@@ -87,6 +89,9 @@ private:
     std::vector<float> vec_col;
     std::vector<float> smoke_col;
     std::vector<uint32_t> indices;
+
+	///isoline
+	float* iso_pos, * iso_col;
 
     GLuint vertexLocation = 0;
     GLuint colorLocation = 1;

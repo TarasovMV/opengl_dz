@@ -23,6 +23,7 @@ struct Simulator
 	double GetForceY(uint32_t x, uint32_t y);
     void SetDensity(uint32_t x, uint32_t y, double val) { rho[y * dim + x] = val; }
     double GetDensity(uint32_t x, uint32_t y) { return rho[y * dim + x];}
+    double GetDensityIso(uint32_t x) { return rho[x];}
     double GetVelocityX(uint32_t x, uint32_t y) { return vx[y * dim + x];}
     double GetVelocityY(uint32_t x, uint32_t y) { return vy[y * dim + x];}
 	double GetVelocity(uint32_t x, uint32_t y) { return (sqrt(pow(GetVelocityX(x, y), 2) + pow(GetVelocityY(x, y), 2))); }

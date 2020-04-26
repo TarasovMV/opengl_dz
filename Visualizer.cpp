@@ -1,6 +1,8 @@
 #include "Visualizer.h"
 
-
+GLuint sim_vbo_izo, sim_vao_izo;
+GLuint vbo_izo_col;
+GLuint vboIndices;
 //rainbow colormap for scalar value
 void rainbow(float value,float &R, float &G, float &B)
 {
@@ -185,10 +187,32 @@ void Visualizer::Init(int n, uint32_t width, uint32_t height)
     }
   }
 
-  GLuint vboIndices;
   glGenBuffers(1, &vboIndices);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices); GL_CHECK_ERRORS;
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLuint), indices.data(), GL_STREAM_DRAW); GL_CHECK_ERRORS;
+
+  glBindVertexArray(0);
+
+  iso_pos = (float*)malloc(n * n * 4 * sizeof(float));
+  iso_col = (float*)malloc(n * n * 6 * sizeof(float));
+  glGenBuffers(1, &sim_vbo_izo); GL_CHECK_ERRORS;
+  glGenBuffers(1, &vbo_izo_col); GL_CHECK_ERRORS;
+
+  glBindBuffer(GL_ARRAY_BUFFER, sim_vbo_izo); GL_CHECK_ERRORS;
+  glBufferData(GL_ARRAY_BUFFER, n * n * 2 * sizeof(GLfloat), iso_pos, GL_STREAM_DRAW); GL_CHECK_ERRORS;
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_izo_col); GL_CHECK_ERRORS;
+  glBufferData(GL_ARRAY_BUFFER, n * n * 3 * sizeof(GLfloat), iso_col, GL_STREAM_DRAW); GL_CHECK_ERRORS;
+
+  glGenVertexArrays(1, &sim_vao_izo); GL_CHECK_ERRORS;
+  glBindVertexArray(sim_vao_izo); GL_CHECK_ERRORS;
+
+  glBindBuffer(GL_ARRAY_BUFFER, sim_vbo_izo); GL_CHECK_ERRORS;
+  glEnableVertexAttribArray(vertexLocation); GL_CHECK_ERRORS;
+  glVertexAttribPointer(vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); GL_CHECK_ERRORS;
+  glBindBuffer(GL_ARRAY_BUFFER, vbo_izo_col); GL_CHECK_ERRORS;
+
+  glEnableVertexAttribArray(colorLocation); GL_CHECK_ERRORS;
+  glVertexAttribPointer(colorLocation, 3, GL_FLOAT, GL_FALSE, 0, 0); GL_CHECK_ERRORS;
 
   glBindVertexArray(0);
 }
@@ -204,6 +228,10 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
 
   float coeff_x = 2.0f / m_width;
   float coeff_y = 2.0f / m_height;
+
+  if (draw_isoline) {
+	  DrawIsoline(pSim);
+  }
 
   if (draw_smoke)
   {
@@ -305,6 +333,7 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
         vec_col[(i * m_grid_dim + j) * 6 + 5] = b;
       }
     }
+
     glBindVertexArray(sim_vao_vec);                                                          GL_CHECK_ERRORS;
 
     glBindBuffer(GL_ARRAY_BUFFER, sim_vbo_vec);                                              GL_CHECK_ERRORS;
@@ -318,6 +347,138 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
     glDrawArrays(GL_LINES, 0, m_grid_dim * m_grid_dim * 2);
     glBindVertexArray(0);
   }
+}
+
+void Visualizer::DrawIsoline(const std::shared_ptr<Simulator>& pSim) {
+	float rho0 = 0.2;
+	float interval;
+	static const GLsizei WIDTH = 1024, HEIGHT = 1024;
+
+	bool isoline_m = false;
+	int iso_n = 1;
+	float rho0_iso = 0.2;
+	float rho1_iso = 0.0;
+	float rho2_iso = 0.2;
+
+	double  wn = (double)WIDTH / (double)(m_grid_dim + 1);
+	double  hn = (double)HEIGHT / (double)(m_grid_dim + 1);
+
+	float coeff_x = 2.0f / WIDTH;
+	float coeff_y = 2.0f / HEIGHT;
+
+	if (isoline_m)
+		interval = (rho2_iso - rho1_iso) / iso_n;
+
+	for (int k = 0; k < iso_n; k++)
+	{
+		if (isoline_m)
+			rho0 = rho2_iso - k * interval;
+		else
+			rho0 = rho0_iso;
+
+		for (int i = 0; i < m_grid_dim; i++)
+		{
+			for (int j = 0; j < m_grid_dim; j++)
+			{
+				int idx = (j * m_grid_dim) + i;
+
+				float r, g, b;
+
+				r = g = b = 1;
+
+				iso_col[(i * m_grid_dim + j) * 6 + 0] = r;
+				iso_col[(i * m_grid_dim + j) * 6 + 1] = g;
+				iso_col[(i * m_grid_dim + j) * 6 + 2] = b;
+				iso_col[(i * m_grid_dim + j) * 6 + 3] = r;
+				iso_col[(i * m_grid_dim + j) * 6 + 4] = g;
+				iso_col[(i * m_grid_dim + j) * 6 + 5] = b;
+
+				int bl = pSim->GetDensityIso(idx) >= rho0;
+				int tl = pSim->GetDensityIso(idx) >= rho0;
+				int br = pSim->GetDensityIso(idx) >= rho0;
+				int tr = pSim->GetDensityIso(idx) >= rho0;
+
+				int config = bl | (br << 1) | (tl << 2) | (tr << 3);
+
+				if (config > 7)
+					config = 15 - config;
+
+				float px = wn + (double)i * wn;
+				float py = hn + (double)j * hn;
+
+				switch (config)
+				{
+				case 0:
+					break;
+
+				case 1:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn / 2;
+					break;
+
+				case 2:
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py + hn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py - hn / 2;
+					break;
+
+				case 3:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px + wn;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn / 2;
+					break;
+
+				case 4:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py + hn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn;
+					break;
+
+				case 5:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px + wn;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py + hn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn;
+					break;
+
+				case 6:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px + wn;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py + hn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn;
+					break;
+
+				case 7:
+					iso_pos[(i * m_grid_dim + j) * 4 + 0] = px + wn;
+					iso_pos[(i * m_grid_dim + j) * 4 + 1] = py + hn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 2] = px + wn / 2;
+					iso_pos[(i * m_grid_dim + j) * 4 + 3] = py + hn;
+					break;
+				}
+
+				iso_pos[(i * m_grid_dim + j) * 4 + 0] = iso_pos[(i * m_grid_dim + j) * 4 + 0] * coeff_x - 1.0f;
+				iso_pos[(i * m_grid_dim + j) * 4 + 1] = iso_pos[(i * m_grid_dim + j) * 4 + 1] * coeff_y - 1.0f;
+				iso_pos[(i * m_grid_dim + j) * 4 + 2] = iso_pos[(i * m_grid_dim + j) * 4 + 2] * coeff_x - 1.0f;
+				iso_pos[(i * m_grid_dim + j) * 4 + 3] = iso_pos[(i * m_grid_dim + j) * 4 + 3] * coeff_y - 1.0f;
+			}
+		}
+
+		glBindVertexArray(sim_vao_izo);  GL_CHECK_ERRORS;
+		glBindBuffer(GL_ARRAY_BUFFER, sim_vbo_izo);  GL_CHECK_ERRORS;
+		glBufferData(GL_ARRAY_BUFFER, m_grid_dim* m_grid_dim * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); GL_CHECK_ERRORS;
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m_grid_dim* m_grid_dim * 4 * sizeof(GLfloat), iso_pos);   GL_CHECK_ERRORS;
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_izo_col);   GL_CHECK_ERRORS;
+		glBufferData(GL_ARRAY_BUFFER, m_grid_dim* m_grid_dim * 6 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); GL_CHECK_ERRORS;
+		glBufferSubData(GL_ARRAY_BUFFER, 0, m_grid_dim* m_grid_dim * 6 * sizeof(GLfloat), iso_col);  GL_CHECK_ERRORS;
+		glDrawArrays(GL_LINES, 0, m_grid_dim* m_grid_dim * 2);
+
+		glBindVertexArray(0);
+	}
 }
 
 void Visualizer::Draw()
@@ -357,5 +518,11 @@ void Visualizer::Draw()
     //glDrawArrays(GL_LINES, 0, m_grid_dim * m_grid_dim * 2); GL_CHECK_ERRORS;
     glBindVertexArray(0);
   }
+
+  const int DIM = 128;
+  glBindVertexArray(sim_vao_izo);  GL_CHECK_ERRORS;
+  glDrawArrays(GL_LINES, 0, DIM * DIM * 2);
+
+  glBindVertexArray(0);
 }
 
