@@ -34,7 +34,7 @@ include rules.ninja
 # Utility command for edit_cache
 
 build CMakeFiles\edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_dz\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles\edit_cache.util
@@ -93,9 +93,9 @@ build main.exe: CXX_EXECUTABLE_LINKER__main CMakeFiles\main.dir\glad.c.obj CMake
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /ZI /Ob0 /Od /RTC1 /JMC
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = opengl32.lib glfw3dll.lib libfftw3-3.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib
-  LINK_PATH = -LIBPATH:C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\dependencies\lib  -LIBPATH:C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\dependencies\lib\fftw
+  LINK_PATH = -LIBPATH:C:\Users\taras\Documents\GitHub\opengl_dz\dependencies\lib  -LIBPATH:C:\Users\taras\Documents\GitHub\opengl_dz\dependencies\lib\fftw
   OBJECT_DIR = CMakeFiles\main.dir
-  POST_BUILD = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/shaders C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/out/build/x64-Debug && cd /D C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/dependencies/bin C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/out/build/x64-Debug"
+  POST_BUILD = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_dz\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/taras/Documents/GitHub/opengl_dz/shaders C:/Users/taras/Documents/GitHub/opengl_dz/out/build/x64-Debug && cd /D C:\Users\taras\Documents\GitHub\opengl_dz\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E copy_directory C:/Users/taras/Documents/GitHub/opengl_dz/dependencies/bin C:/Users/taras/Documents/GitHub/opengl_dz/out/build/x64-Debug"
   PRE_LINK = cd .
   TARGET_COMPILE_PDB = CMakeFiles\main.dir\
   TARGET_FILE = main.exe
@@ -106,7 +106,7 @@ build main.exe: CXX_EXECUTABLE_LINKER__main CMakeFiles\main.dir\glad.c.obj CMake
 # Utility command for rebuild_cache
 
 build CMakeFiles\rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3 -BC:\Users\taras\Documents\GitHub\opengl_ex_sim_vis_gl3\out\build\x64-Debug"
+  COMMAND = cmd.exe /C "cd /D C:\Users\taras\Documents\GitHub\opengl_dz\out\build\x64-Debug && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:\Users\taras\Documents\GitHub\opengl_dz -BC:\Users\taras\Documents\GitHub\opengl_dz\out\build\x64-Debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1

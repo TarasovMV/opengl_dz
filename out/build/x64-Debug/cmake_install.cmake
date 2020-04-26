@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3
+# Install script for directory: C:/Users/taras/Documents/GitHub/opengl_dz
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/taras/Documents/GitHub/opengl_dz/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/taras/Documents/GitHub/opengl_ex_sim_vis_gl3/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/taras/Documents/GitHub/opengl_dz/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
