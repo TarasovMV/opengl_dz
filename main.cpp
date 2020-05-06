@@ -79,8 +79,12 @@ static void key(GLFWwindow* window, int k, int s, int action, int mods)
     case GLFW_KEY_M: pVis->NextScalarColormap(); break;
 	/// Переключение скалярной величины
     case GLFW_KEY_P: pVis->NextScalarObject(); break;
-	/// Переключение скалярной величины
+	/// Переключение глифов
 	case GLFW_KEY_U: pVis->NextGlyphType(); break;
+	/// Переключение изолиний
+	case GLFW_KEY_I: pVis->NextIsolineType(); break;
+
+
     
     case GLFW_KEY_ESCAPE: exit(0);
     case GLFW_KEY_SPACE:
@@ -120,7 +124,7 @@ int initGL()
 int main(int argc, char** argv)
 {
 	///частота расстановки глифов
-  int grid_size = 128;
+	int grid_size = 128;
 
 	if(!glfwInit())
     return -1;

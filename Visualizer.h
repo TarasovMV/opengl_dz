@@ -35,6 +35,13 @@ struct Visualizer
 		CountGlyphType = 4,
 	};
 
+	enum IsolineType {
+		OFF = 0,
+		BASE = 1,
+		INTERVAL = 2,
+		CountIsolineType = 3,
+	};
+
     static constexpr uint32_t n_dir_colormaps = 2;
     static constexpr uint32_t n_scalar_colormaps = 6;
 
@@ -49,6 +56,9 @@ struct Visualizer
 	}
 	void NextGlyphType() {
 		glyph_type = (glyph_type + 1) % ((int)GlyphType::CountGlyphType);
+	}
+	void NextIsolineType() {
+		isoline_type = (isoline_type + 1) % ((int)IsolineType::CountIsolineType);
 	}
     void NextScalarColormap()    { colormap_scalar = (colormap_scalar + 1) % n_scalar_colormaps;}
     void MultiplyGlyphLength(double mul) { vec_scale *= mul; }
@@ -78,7 +88,8 @@ private:
     uint32_t colormap_dir    = WHITE;
     uint32_t colormap_scalar = WHITE;
     uint32_t object_scalar = VELOCITY;
-    uint32_t glyph_type = POINTS;
+	uint32_t glyph_type = POINTS;
+	uint32_t isoline_type = OFF;
 
     int m_grid_dim;
     uint32_t m_width;

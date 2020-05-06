@@ -229,7 +229,7 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
   float coeff_x = 2.0f / m_width;
   float coeff_y = 2.0f / m_height;
 
-  if (draw_isoline) {
+  if (isoline_type != OFF) {
 	  DrawIsoline(pSim);
   }
 
@@ -350,13 +350,16 @@ void Visualizer::UpdateBuffers(const std::shared_ptr<Simulator> &pSim)
 }
 
 void Visualizer::DrawIsoline(const std::shared_ptr<Simulator>& pSim) {
-	float rho0 = 0.2;
+	float rho0;
 	float interval;
 	static const GLsizei WIDTH = 1024, HEIGHT = 1024;
-
+	// isoline toggle (true - interval, false - base)
 	bool isoline_m = false;
+	// isoline count
 	int iso_n = 1;
+	// base
 	float rho0_iso = 0.2;
+	// interval
 	float rho1_iso = 0.0;
 	float rho2_iso = 0.2;
 
@@ -365,6 +368,11 @@ void Visualizer::DrawIsoline(const std::shared_ptr<Simulator>& pSim) {
 
 	float coeff_x = 2.0f / WIDTH;
 	float coeff_y = 2.0f / HEIGHT;
+
+	// if interval
+	if (isoline_type == INTERVAL) {
+		isoline_m = true;
+	}
 
 	if (isoline_m)
 		interval = (rho2_iso - rho1_iso) / iso_n;
@@ -394,9 +402,9 @@ void Visualizer::DrawIsoline(const std::shared_ptr<Simulator>& pSim) {
 				iso_col[(i * m_grid_dim + j) * 6 + 5] = b;
 
 				int bl = pSim->GetDensityIso(idx) >= rho0;
-				int tl = pSim->GetDensityIso(idx) >= rho0;
-				int br = pSim->GetDensityIso(idx) >= rho0;
-				int tr = pSim->GetDensityIso(idx) >= rho0;
+				int tl = pSim->GetDensityIso(idx + 1) >= rho0;
+				int br = pSim->GetDensityIso(idx + 2) >= rho0;
+				int tr = pSim->GetDensityIso(idx + 3) >= rho0;
 
 				int config = bl | (br << 1) | (tl << 2) | (tr << 3);
 
